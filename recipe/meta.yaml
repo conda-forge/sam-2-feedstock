@@ -16,34 +16,63 @@ source:
     - 216_be_compatible_with_cpu_only.patch
     - remove_torchvision_minimum_requirement.patch
 
-{% set build = 0 %}
+{% set build = 1 %}
+{% set build = build + 300 %}  # [cuda_compiler_version != "None"]
 
 build:
+  string: cpu_pyh{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version == "None"]
+  string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   script:
+    # Ensure to add PTX at the end, always
+    - export TORCH_CUDA_ARCH_LIST="5.0;6.0;6.1;7.0;7.5;8.0;8.6;8.9;9.0+PTX"  # [cuda_compiler_version != "None"]
+    - export CUDA_TOOLKIT_ROOT_DIR="${PREFIX}"                               # [cuda_compiler_version != "None"]
+    - export FORCE_CUDA=1                                                    # [cuda_compiler_version != "None"]
+    - export SAM2_BUILD_ALLOW_ERRORS=0                                       # [cuda_compiler_version != "None"]
     - python -m pip install . -vv
   number: {{ build }}
-  noarch: python
-  # skip: true      # [win]
-  # skip: true      # [py<310]
+  skip: true      # [py<310]
+  skip: true      # [win]
+  skip: true      # [cuda_compiler_version == "11.8"]
 
 requirements:
+  build:
+    - python                                 # [build_platform != target_platform]
+    - cross-python_{{ target_platform }}     # [build_platform != target_platform]
+    - {{ stdlib('c') }}                      # [cuda_compiler_version != "None"]
+    - {{ compiler('c') }}                    # [cuda_compiler_version != "None"]
+    - {{ compiler('cxx') }}                  # [cuda_compiler_version != "None"]
+    - {{ compiler('cuda') }}                 # [cuda_compiler_version != "None"]
+    - ninja                                  # [cuda_compiler_version != "None"]
+    - libcublas-dev                          # [build_platform != target_platform and cuda_compiler_version != "None"]
+    - libcusolver-dev                        # [build_platform != target_platform and cuda_compiler_version != "None"]
+    - libcusparse-dev                        # [build_platform != target_platform and cuda_compiler_version != "None"]
+    - cuda-cudart-dev                        # [build_platform != target_platform and cuda_compiler_version != "None"]
   host:
-    - python >=3.10
+    - python
     - pip
     - setuptools
     - pytorch
+    - libtorch *=cuda*                       # [cuda_compiler_version != "None"]
+    - libcublas-dev                          # [cuda_compiler_version != "None"]
+    - libcusolver-dev                        # [cuda_compiler_version != "None"]
+    - libcusparse-dev                        # [cuda_compiler_version != "None"]
+    - cuda-cudart-dev                        # [cuda_compiler_version != "None"]
+    - cuda-version {{ cuda_compiler_version }}  # [cuda_compiler_version != "None"]
   run:
-    - python >=3.10
+    - python
     - hydra-core
     - pytorch
+    - libtorch *=cuda*                       # [cuda_compiler_version != "None"]
     - torchvision >=0.18.1
     # https://github.com/facebookresearch/segment-anything-2/pull/216
-    - scikit-image
+    - scikit-image                           # [cuda_compiler_version == "None"]
     # It doesn't seem to be used anywhere in their code...
     # https://github.com/conda-forge/iopath-feedstock/pull/3
     # - iopath >=0.1.10
     - tqdm
     - pillow
+    # avoid that people without GPUs needlessly download ~0.5-1GB
+    - __cuda                                 # [cuda_compiler_version != "None"]
   run_constrained:
     # Let the run_export from pytorch take effect
     # so put their requirement here
@@ -64,6 +93,8 @@ test:
     - pip
   commands:
     - pip check
+    # Tests that cuda compilation worked for the expected output
+    - test -f ${SP_DIR}/sam2/_C.so  # [cuda_compiler_version != "None"]
 
 about:
   home: https://github.com/facebookresearch/segment-anything-2

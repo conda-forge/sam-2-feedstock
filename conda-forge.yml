@@ -3,4 +3,7 @@ github:
   tooling_branch_name: main
 conda_build:
   error_overlinking: true
+build_platform:
+  osx_arm64: osx_64
+test: native_and_emulated
 conda_forge_output_validation: true
