@@ -14,9 +14,8 @@ source:
   sha256: 1fbc78e6b6cedc2b1cdcff6e42ad8004f991451c6dfce1bc5efc7d59c0f203b4
   patches:
     - 216_be_compatible_with_cpu_only.patch
-    - remove_torchvision_minimum_requirement.patch
 
-{% set build = 2 %}
+{% set build = 3 %}
 {% set build = build + 300 %}  # [cuda_compiler_version != "None"]
 
 build:
@@ -51,7 +50,7 @@ requirements:
     - python
     - pip
     - setuptools
-    - pytorch
+    - pytorch                                # [cuda_compiler_version != "None"]
     - libtorch *=cuda*                       # [cuda_compiler_version != "None"]
     - libcublas-dev                          # [cuda_compiler_version != "None"]
     - libcusolver-dev                        # [cuda_compiler_version != "None"]
@@ -68,7 +67,7 @@ requirements:
     - scikit-image                           # [cuda_compiler_version == "None"]
     # It doesn't seem to be used anywhere in their code...
     # https://github.com/conda-forge/iopath-feedstock/pull/3
-    # - iopath >=0.1.10
+    - iopath >=0.1.10
     - tqdm
     - pillow
     # avoid that people without GPUs needlessly download ~0.5-1GB
