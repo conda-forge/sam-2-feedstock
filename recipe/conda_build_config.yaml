@@ -1,3 +1,6 @@
+# 2024/11/05 - hmaarrfk
+# I'm building for a few versions of pytorch to allow users
+# to workaround https://github.com/conda-forge/hdf5-feedstock/issues/240
 pytorch:
   - 2.3.1
   - 2.4.0
