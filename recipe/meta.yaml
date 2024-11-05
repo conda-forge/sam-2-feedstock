@@ -11,7 +11,7 @@ package:
 
 source:
   url: https://github.com/facebookresearch/segment-anything-2/archive/{{ git_hash }}.tar.gz
-  sha256: 30a317999fa4eae5f239a0ae41e464f1394ecc387d40c16047118c70c5459aa8
+  sha256: 1fbc78e6b6cedc2b1cdcff6e42ad8004f991451c6dfce1bc5efc7d59c0f203b4
   patches:
     - 216_be_compatible_with_cpu_only.patch
     - remove_torchvision_minimum_requirement.patch
