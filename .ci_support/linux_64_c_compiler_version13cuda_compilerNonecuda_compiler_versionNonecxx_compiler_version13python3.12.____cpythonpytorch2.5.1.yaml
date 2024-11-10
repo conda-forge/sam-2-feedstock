@@ -27,10 +27,8 @@ pin_run_as_build:
     min_pin: x.x
     max_pin: x.x
 python:
-- 3.13.* *_cp313
+- 3.12.* *_cpython
 pytorch:
-- 2.4.0
-- 2.4.1
 - 2.5.1
 target_platform:
 - linux-64
