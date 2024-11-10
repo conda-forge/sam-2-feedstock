@@ -32,7 +32,6 @@ build:
   skip: true      # [py<310]
   skip: true      # [win]
   skip: true      # [cuda_compiler_version == "11.8"]
-  skip: true      # [py<313 and pytorch == "2.4.0"]
 
 requirements:
   build:
