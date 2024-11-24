@@ -50,7 +50,7 @@ requirements:
     - python
     - pip
     - setuptools
-    - pytorch                                # [cuda_compiler_version != "None"]
+    - pytorch
     - libtorch *=cuda*                       # [cuda_compiler_version != "None"]
     - libcublas-dev                          # [cuda_compiler_version != "None"]
     - libcusolver-dev                        # [cuda_compiler_version != "None"]
