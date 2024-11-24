@@ -15,7 +15,7 @@ source:
   patches:
     - 216_be_compatible_with_cpu_only.patch
 
-{% set build = 3 %}
+{% set build = 4 %}
 {% set build = build + 300 %}  # [cuda_compiler_version != "None"]
 
 build:
@@ -50,7 +50,7 @@ requirements:
     - python
     - pip
     - setuptools
-    - pytorch                                # [cuda_compiler_version != "None"]
+    - pytorch
     - libtorch *=cuda*                       # [cuda_compiler_version != "None"]
     - libcublas-dev                          # [cuda_compiler_version != "None"]
     - libcusolver-dev                        # [cuda_compiler_version != "None"]
