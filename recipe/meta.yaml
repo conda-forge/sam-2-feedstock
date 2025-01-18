@@ -30,9 +30,10 @@ build:
   string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   script:
     # Ensure to add PTX at the end, always
-    - {{ export }} TORCH_CUDA_ARCH_LIST=5.0;6.0;6.1;7.0;7.5;8.0;8.6;8.9;9.0+PTX  # [cuda_compiler_version != "None"]
-    - {{ export }} CUDA_TOOLKIT_ROOT_DIR=${PREFIX}                               # [cuda_compiler_version != "None" and unix]
-    - {{ export }} CUDA_TOOLKIT_ROOT_DIR=%PREFIX%                                # [cuda_compiler_version != "None" and win]
+    - export TORCH_CUDA_ARCH_LIST="5.0;6.0;6.1;7.0;7.5;8.0;8.6;8.9;9.0+PTX"  # [cuda_compiler_version != "None" and unix]
+    - set TORCH_CUDA_ARCH_LIST=5.0;6.0;6.1;7.0;7.5;8.0;8.6;8.9;9.0+PTX       # [cuda_compiler_version != "None" and win]
+    - export CUDA_TOOLKIT_ROOT_DIR="${PREFIX}"                               # [cuda_compiler_version != "None" and unix]
+    - set CUDA_TOOLKIT_ROOT_DIR=%PREFIX%                                     # [cuda_compiler_version != "None" and win]
     - {{ export }} FORCE_CUDA=1                                                  # [cuda_compiler_version != "None"]
     - {{ export }} SAM2_BUILD_ALLOW_ERRORS=0                                     # [cuda_compiler_version != "None"]
     - python -m pip install . -vv
