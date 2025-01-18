@@ -15,7 +15,7 @@ package:
 
 source:
   url: https://github.com/facebookresearch/segment-anything-2/archive/{{ git_hash }}.tar.gz
-  sha256: 6ad80e91020c10cdc515cdcf490ebb9de5be4ac0faf8107eea97825519008994
+  sha256: 1f2fbfad3ffa38110368abac76c6ef9df9c282a66d5c2807bc94abf4d2fb30f8
   patches:
     - 216_be_compatible_with_cpu_only.patch
 
