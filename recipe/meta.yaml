@@ -82,6 +82,8 @@ requirements:
     # avoid that people without GPUs needlessly download ~0.5-1GB
     - __cuda                                 # [cuda_compiler_version != "None"]
   run_constrained:
+    - libtorch *=cuda*                       # [cuda_compiler_version != "None"]
+    - libtorch *=cpu*                        # [cuda_compiler_version == "None"]
     # Let the run_export from pytorch take effect
     # so put their requirement here
     - pytorch >=2.3.1
