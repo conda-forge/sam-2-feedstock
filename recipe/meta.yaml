@@ -38,6 +38,7 @@ build:
     - python -m pip install . -vv
   number: {{ build }}
   skip: true      # [py<310]
+  skip: true      # [win or aarch64]
   skip: true      # [cuda_compiler_version == "11.8"]
 
 requirements:
