@@ -99,7 +99,7 @@ test:
   commands:
     - pip check
     # Tests that cuda compilation worked for the expected output
-    - test -f ${SP_DIR}/sam2/_C.so               # [unix and cuda_compiler_version != "None"]
+    - test -f ${SP_DIR}/sam2/_C.so               # [linux and (cuda_compiler_version != "None")]
     - if not exists %PS_DIR%\sam2\_C.lib exit 1  # [win and and cuda_compiler_version != "None"
 
 about:
