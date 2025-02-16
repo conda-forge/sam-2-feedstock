@@ -50,9 +50,6 @@ requirements:
     - {{ compiler('cxx') }}                  # [cuda_compiler_version != "None"]
     - {{ compiler('cuda') }}                 # [cuda_compiler_version != "None"]
     - ninja                                  # [cuda_compiler_version != "None"]
-    - libcublas-dev                          # [build_platform != target_platform and cuda_compiler_version != "None"]
-    - libcusolver-dev                        # [build_platform != target_platform and cuda_compiler_version != "None"]
-    - libcusparse-dev                        # [build_platform != target_platform and cuda_compiler_version != "None"]
     - cuda-cudart-dev                        # [build_platform != target_platform and cuda_compiler_version != "None"]
   host:
     - python
@@ -60,9 +57,6 @@ requirements:
     - setuptools
     - pytorch
     - libtorch *=cuda*                       # [cuda_compiler_version != "None"]
-    - libcublas-dev                          # [cuda_compiler_version != "None"]
-    - libcusolver-dev                        # [cuda_compiler_version != "None"]
-    - libcusparse-dev                        # [cuda_compiler_version != "None"]
     - cuda-cudart-dev                        # [cuda_compiler_version != "None"]
     - cuda-version {{ cuda_compiler_version }}  # [cuda_compiler_version != "None"]
   run:
