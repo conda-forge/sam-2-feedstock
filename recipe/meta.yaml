@@ -19,7 +19,7 @@ source:
   patches:
     - 216_be_compatible_with_cpu_only.patch
 
-{% set build = 5 %}
+{% set build = 6 %}
 {% set build = build + 300 %}  # [cuda_compiler_version != "None"]
 
 build:
@@ -38,7 +38,8 @@ build:
     - python -m pip install . -vv
   number: {{ build }}
   skip: true      # [py<310]
-  skip: true      # [win or aarch64]
+  # Remove this when we are ready to release, this is mostly for speed
+  skip: true      # [py!=312]
   skip: true      # [cuda_compiler_version == "11.8"]
 
 requirements:
