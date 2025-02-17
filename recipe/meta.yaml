@@ -19,11 +19,11 @@ source:
   patches:
     - 216_be_compatible_with_cpu_only.patch
 
-{% set build = 7 %}
+{% set build = 8 %}
 {% set build = build + 300 %}  # [cuda_compiler_version != "None"]
 
 build:
-  string: cpu_pyh{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version == "None"]
+  string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version == "None"]
   string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   script:
     # Ensure to add PTX at the end, always
