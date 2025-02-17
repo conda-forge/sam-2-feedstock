@@ -19,11 +19,11 @@ source:
   patches:
     - 216_be_compatible_with_cpu_only.patch
 
-{% set build = 5 %}
+{% set build = 6 %}
 {% set build = build + 300 %}  # [cuda_compiler_version != "None"]
 
 build:
-  string: cpu_pyh{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version == "None"]
+  string: cpu_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version == "None"]
   string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   script:
     # Ensure to add PTX at the end, always
@@ -81,6 +81,8 @@ requirements:
     # avoid that people without GPUs needlessly download ~0.5-1GB
     - __cuda                                 # [cuda_compiler_version != "None"]
   run_constrained:
+    - libtorch *=cpu*                        # [cuda_compiler_version == "None"]
+    - libtorch *=cuda*                       # [cuda_compiler_version != "None"]
     # Let the run_export from pytorch take effect
     # so put their requirement here
     - pytorch >=2.3.1
