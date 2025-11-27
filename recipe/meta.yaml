@@ -19,7 +19,7 @@ source:
   patches:
     - 216_be_compatible_with_cpu_only.patch
 
-{% set build = 0 %}
+{% set build = 1 %}
 {% set build = build + 300 %}  # [cuda_compiler_version != "None"]
 
 build:
@@ -37,8 +37,9 @@ build:
     - export FORCE_CUDA=1                                                                 # [cuda_compiler_version != "None" and unix]
     - python -m pip install . -vv
   number: {{ build }}
-  skip: true      # [py<310]
-  skip: true      # [cuda_compiler_version == "11.8"]
+  # I'm (hmaarrfk) giving up on compiling for windows 2025/11
+  # https://github.com/conda-forge/pytorch-cpu-feedstock/issues/459
+  skip: true   # [cuda_compiler_version != "None" and win]
 
 requirements:
   build:
