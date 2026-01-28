@@ -19,7 +19,7 @@ source:
   patches:
     - 216_be_compatible_with_cpu_only.patch
 
-{% set build = 1 %}
+{% set build = 2 %}
 {% set build = build + 300 %}  # [cuda_compiler_version != "None"]
 
 build:
