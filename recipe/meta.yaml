@@ -27,14 +27,14 @@ build:
   string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   script:
     # Ensure to add PTX at the end, always
-    - set TORCH_CUDA_ARCH_LIST=5.0;6.0;7.0;7.5;8.0;8.6;8.9;9.0;10.0;12.0+PTX              # [cuda_compiler_version != "None" and win]
-    - set CUDA_TOOLKIT_ROOT_DIR=%PREFIX%                                                  # [cuda_compiler_version != "None" and win]
-    - export export TORCH_CUDA_ARCH_LIST="5.0;6.0;7.0;7.5;8.0;8.6;8.9;9.0;10.0;12.0+PTX"  # [cuda_compiler_version != "None" and unix]
-    - export CUDA_TOOLKIT_ROOT_DIR="${PREFIX}"                                            # [cuda_compiler_version != "None" and unix]
-    - set SAM2_BUILD_ALLOW_ERRORS=0                                                       # [cuda_compiler_version != "None" and win]
-    - set FORCE_CUDA=1                                                                    # [cuda_compiler_version != "None" and win]
-    - export SAM2_BUILD_ALLOW_ERRORS=0                                                    # [cuda_compiler_version != "None" and unix]
-    - export FORCE_CUDA=1                                                                 # [cuda_compiler_version != "None" and unix]
+    - set TORCH_CUDA_ARCH_LIST=%CF_TORCH_CUDA_ARCH_LIST%               # [cuda_compiler_version != "None" and win]
+    - set CUDA_TOOLKIT_ROOT_DIR=%PREFIX%                               # [cuda_compiler_version != "None" and win]
+    - export export TORCH_CUDA_ARCH_LIST="${CF_TORCH_CUDA_ARCH_LIST}"  # [cuda_compiler_version != "None" and unix]
+    - export CUDA_TOOLKIT_ROOT_DIR="${PREFIX}"                         # [cuda_compiler_version != "None" and unix]
+    - set SAM2_BUILD_ALLOW_ERRORS=0                                    # [cuda_compiler_version != "None" and win]
+    - set FORCE_CUDA=1                                                 # [cuda_compiler_version != "None" and win]
+    - export SAM2_BUILD_ALLOW_ERRORS=0                                 # [cuda_compiler_version != "None" and unix]
+    - export FORCE_CUDA=1                                              # [cuda_compiler_version != "None" and unix]
     - python -m pip install . -vv
   number: {{ build }}
   # I'm (hmaarrfk) giving up on compiling for windows 2025/11
