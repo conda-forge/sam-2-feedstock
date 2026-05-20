@@ -18,8 +18,11 @@ source:
   sha256: 1f2fbfad3ffa38110368abac76c6ef9df9c282a66d5c2807bc94abf4d2fb30f8
   patches:
     - 216_be_compatible_with_cpu_only.patch
+    # Remove the 3-channel assertion in set_image / set_image_batch so
+    # downstream callers can use 1-channel input.
+    - remove_channel_assertion.patch
 
-{% set build = 4 %}
+{% set build = 5 %}
 {% set build = build + 300 %}  # [cuda_compiler_version != "None"]
 
 build:
