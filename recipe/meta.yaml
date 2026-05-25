@@ -22,7 +22,7 @@ source:
     # downstream callers can use 1-channel input.
     - remove_channel_assertion.patch
 
-{% set build = 5 %}
+{% set build = 6 %}
 {% set build = build + 300 %}  # [cuda_compiler_version != "None"]
 
 build:
@@ -30,9 +30,15 @@ build:
   string: cuda{{ cuda_compiler_version | replace('.', '') }}py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   script:
     # Ensure to add PTX at the end, always
-    - set TORCH_CUDA_ARCH_LIST=%CF_TORCH_CUDA_ARCH_LIST%               # [cuda_compiler_version != "None" and win]
+    # On Windows, conda-build does not run libtorch's host activate.d script in the
+    # build environment, so CF_TORCH_CUDA_ARCH_LIST comes through empty and torch's
+    # _get_cuda_arch_flags() crashes on an empty arch list. Hardcode the arch list
+    # per CUDA version, the same way torchvision does on Windows:
+    # https://github.com/conda-forge/torchvision-feedstock/blob/main/recipe/build.bat
+    - set "TORCH_CUDA_ARCH_LIST=7.5;8.0;8.6;8.9;9.0;10.0;11.0;12.0+PTX"          # [cuda_compiler_version == "13.0" and win]
+    - set "TORCH_CUDA_ARCH_LIST=5.0;6.0;7.0;7.5;8.0;8.6;8.9;9.0;10.0;12.0+PTX"   # [cuda_compiler_version.startswith("12") and win]
     - set CUDA_TOOLKIT_ROOT_DIR=%PREFIX%                               # [cuda_compiler_version != "None" and win]
-    - export export TORCH_CUDA_ARCH_LIST="${CF_TORCH_CUDA_ARCH_LIST}"  # [cuda_compiler_version != "None" and unix]
+    - export TORCH_CUDA_ARCH_LIST="${CF_TORCH_CUDA_ARCH_LIST}"         # [cuda_compiler_version != "None" and unix]
     - export CUDA_TOOLKIT_ROOT_DIR="${PREFIX}"                         # [cuda_compiler_version != "None" and unix]
     - set SAM2_BUILD_ALLOW_ERRORS=0                                    # [cuda_compiler_version != "None" and win]
     - set FORCE_CUDA=1                                                 # [cuda_compiler_version != "None" and win]
@@ -40,9 +46,6 @@ build:
     - export FORCE_CUDA=1                                              # [cuda_compiler_version != "None" and unix]
     - python -m pip install . -vv
   number: {{ build }}
-  # I'm (hmaarrfk) giving up on compiling for windows 2025/11
-  # https://github.com/conda-forge/pytorch-cpu-feedstock/issues/459
-  skip: true   # [cuda_compiler_version != "None" and win]
 
 requirements:
   build:
