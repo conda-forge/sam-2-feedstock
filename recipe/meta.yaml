@@ -22,7 +22,7 @@ source:
     # downstream callers can use 1-channel input.
     - remove_channel_assertion.patch
 
-{% set build = 6 %}
+{% set build = 8 %}
 {% set build = build + 300 %}  # [cuda_compiler_version != "None"]
 
 build:
@@ -36,7 +36,7 @@ build:
     # per CUDA version, the same way torchvision does on Windows:
     # https://github.com/conda-forge/torchvision-feedstock/blob/main/recipe/build.bat
     - set "TORCH_CUDA_ARCH_LIST=7.5;8.0;8.6;8.9;9.0;10.0;11.0;12.0+PTX"          # [cuda_compiler_version == "13.0" and win]
-    - set "TORCH_CUDA_ARCH_LIST=5.0;6.0;7.0;7.5;8.0;8.6;8.9;9.0;10.0;12.0+PTX"   # [cuda_compiler_version.startswith("12") and win]
+    - set "TORCH_CUDA_ARCH_LIST=5.0;6.0;7.0;7.5;8.0;8.6;8.9;9.0;10.0;12.0+PTX"   # [cuda_compiler_version == "12.9" and win]
     - set CUDA_TOOLKIT_ROOT_DIR=%PREFIX%                               # [cuda_compiler_version != "None" and win]
     - export TORCH_CUDA_ARCH_LIST="${CF_TORCH_CUDA_ARCH_LIST}"         # [cuda_compiler_version != "None" and unix]
     - export CUDA_TOOLKIT_ROOT_DIR="${PREFIX}"                         # [cuda_compiler_version != "None" and unix]
@@ -44,6 +44,13 @@ build:
     - set FORCE_CUDA=1                                                 # [cuda_compiler_version != "None" and win]
     - export SAM2_BUILD_ALLOW_ERRORS=0                                 # [cuda_compiler_version != "None" and unix]
     - export FORCE_CUDA=1                                              # [cuda_compiler_version != "None" and unix]
+    # pytorch's torch.utils.cpp_extension._check_cuda_version still caps CUDA 12.9
+    # at gcc <14 (an outdated bound), but conda-forge pins gcc 14 for CUDA 12.9 and
+    # pytorch itself builds its cuda129 packages with gcc 14, so the toolchain is
+    # ABI-consistent. Skip the stale false-positive check; nvcc 12.9 supports gcc 14.
+    # https://github.com/conda-forge/torchvision-feedstock/pull/157
+    - set TORCH_DONT_CHECK_COMPILER_ABI=1                              # [cuda_compiler_version != "None" and win]
+    - export TORCH_DONT_CHECK_COMPILER_ABI=1                           # [cuda_compiler_version != "None" and unix]
     - python -m pip install . -vv
   number: {{ build }}
 
