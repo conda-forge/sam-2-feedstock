@@ -22,7 +22,7 @@ source:
     # downstream callers can use 1-channel input.
     - remove_channel_assertion.patch
 
-{% set build = 7 %}
+{% set build = 8 %}
 {% set build = build + 300 %}  # [cuda_compiler_version != "None"]
 
 build:
@@ -44,6 +44,13 @@ build:
     - set FORCE_CUDA=1                                                 # [cuda_compiler_version != "None" and win]
     - export SAM2_BUILD_ALLOW_ERRORS=0                                 # [cuda_compiler_version != "None" and unix]
     - export FORCE_CUDA=1                                              # [cuda_compiler_version != "None" and unix]
+    # pytorch's torch.utils.cpp_extension._check_cuda_version still caps CUDA 12.9
+    # at gcc <14 (an outdated bound), but conda-forge pins gcc 14 for CUDA 12.9 and
+    # pytorch itself builds its cuda129 packages with gcc 14, so the toolchain is
+    # ABI-consistent. Skip the stale false-positive check; nvcc 12.9 supports gcc 14.
+    # https://github.com/conda-forge/torchvision-feedstock/pull/157
+    - set TORCH_DONT_CHECK_COMPILER_ABI=1                              # [cuda_compiler_version != "None" and win]
+    - export TORCH_DONT_CHECK_COMPILER_ABI=1                           # [cuda_compiler_version != "None" and unix]
     - python -m pip install . -vv
   number: {{ build }}
 
