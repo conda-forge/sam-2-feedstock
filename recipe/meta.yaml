@@ -22,7 +22,7 @@ source:
     # downstream callers can use 1-channel input.
     - remove_channel_assertion.patch
 
-{% set build = 10 %}
+{% set build = 11 %}
 {% set build = build + 300 %}  # [cuda_compiler_version != "None"]
 
 build:
