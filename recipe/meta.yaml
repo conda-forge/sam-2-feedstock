@@ -35,7 +35,7 @@ build:
     # _get_cuda_arch_flags() crashes on an empty arch list. Hardcode the arch list
     # per CUDA version, the same way torchvision does on Windows:
     # https://github.com/conda-forge/torchvision-feedstock/blob/main/recipe/build.bat
-    - set "TORCH_CUDA_ARCH_LIST=7.5;8.0;8.6;9.0;10.0;11.0;12.0+PTX"          # [cuda_compiler_version == "13.0" and win]
+    - set "TORCH_CUDA_ARCH_LIST=7.5;8.0;8.6;9.0;10.0;11.0;12.0+PTX"          # [(cuda_compiler_version or "None").startswith("13") and win]
     - set "TORCH_CUDA_ARCH_LIST=5.0;6.0;7.0;7.5;8.0;8.6;9.0;10.0;12.0+PTX"   # [(cuda_compiler_version or "None").startswith("12") and win]
     - set CUDA_TOOLKIT_ROOT_DIR=%PREFIX%                               # [cuda_compiler_version != "None" and win]
     - export TORCH_CUDA_ARCH_LIST="${CF_TORCH_CUDA_ARCH_LIST}"         # [cuda_compiler_version != "None" and unix]
